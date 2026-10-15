@@ -1,0 +1,26 @@
+:root {
+  --warna-latar: #ffffff;
+  --warna-teks: #1f2937;
+  --warna-teks-redup: #6b7280;
+  --warna-hijau: #16a34a;
+  --warna-hijau-muda: #dcfce7;
+  --warna-kuning: #facc15;
+  --warna-border: #e5e7eb;
+  --radius: 12px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: var(--warna-latar);
+  color: var(--warna-teks);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
