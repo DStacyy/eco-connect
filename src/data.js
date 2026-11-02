@@ -1,4 +1,4 @@
-// ===== DATA SUBJEKTIF (boleh kamu ubah) =====
+// ===== DATA DUMMY (boleh diubah) =====
 
 export const kategori = ['Makanan', 'Fashion', 'Rumah Tangga', 'Kerajinan', 'Elektronik']
 
@@ -6,20 +6,34 @@ export const umkm = [
   {
     id: 'u1',
     nama: 'Dapur Hijau Sari',
-    deskripsi: 'Bumbu dan camilan tanpa pengawet dari bahan lokal.',
     kota: 'Surabaya',
+    deskripsi: 'Bumbu dan camilan tanpa pengawet dari bahan lokal.',
+    cerita:
+      'Berawal dari dapur rumah pada 2019, Sari mengolah sayur dan rempah dari petani sekitar Surabaya menjadi bumbu siap pakai tanpa bahan pengawet.',
   },
   {
     id: 'u2',
     nama: 'Tas Daur Ulang Nara',
-    deskripsi: 'Tas dan dompet dari bahan bekas kemasan.',
     kota: 'Malang',
+    deskripsi: 'Tas dan dompet dari bahan bekas kemasan.',
+    cerita:
+      'Nara memulai usahanya dari kumpulan bungkus kopi bekas. Setiap tas dijahit tangan dan tidak ada dua yang benar-benar sama.',
   },
   {
     id: 'u3',
     nama: 'Elektronik Hijau Bima',
-    deskripsi: 'Perangkat elektronik refurbished dan aksesoris ramah lingkungan.',
     kota: 'Sidoarjo',
+    deskripsi: 'Perangkat elektronik refurbished dan aksesoris ramah lingkungan.',
+    cerita:
+      'Bima memperbaiki perangkat elektronik bekas agar bisa dipakai lagi. Ia percaya barang yang masih layak pakai tidak perlu berakhir di tempat sampah.',
+  },
+  {
+    id: 'u4',
+    nama: 'Rumah Hijau Laras',
+    kota: 'Yogyakarta',
+    deskripsi: 'Perlengkapan rumah dan kerajinan dari bahan alami dan bekas.',
+    cerita:
+      'Laras membuat kerajinan dan perlengkapan rumah tangga dari bambu, kaca bekas, dan lilin kedelai. Semua produknya dibuat dalam jumlah kecil.',
   },
 ]
 
@@ -29,8 +43,11 @@ export const produk = [
     nama: 'Sambal Kemangi 150ml',
     harga: 25000,
     kategori: 'Makanan',
-    gambar: 'https://placehold.co/400x300/ffffff/16a34a?text=Sambal',
+    gambar: 'https://placehold.co/400x300/ffffff/15803d?text=Sambal',
     umkmId: 'u1',
+    stok: 20,
+    atribut: ['Bahan lokal', 'Tanpa pengawet'],
+    deskripsi: 'Sambal kemangi segar dengan cabai dan bawang dari petani lokal. Tanpa pengawet, cukup simpan di kulkas setelah dibuka.',
   },
   {
     id: 'p2',
@@ -39,22 +56,31 @@ export const produk = [
     kategori: 'Fashion',
     gambar: 'https://placehold.co/400x300/ffffff/facc15?text=Tote+Bag',
     umkmId: 'u2',
+    stok: 8,
+    atribut: ['Daur ulang'],
+    deskripsi: 'Tote bag dari kanvas bekas dengan jahitan kuat. Cocok untuk belanja harian dan bisa dicuci.',
   },
   {
     id: 'p3',
     nama: 'Keripik Pisang Organik',
     harga: 18000,
     kategori: 'Makanan',
-    gambar: 'https://placehold.co/400x300/ffffff/16a34a?text=Keripik',
+    gambar: 'https://placehold.co/400x300/ffffff/15803d?text=Keripik',
     umkmId: 'u1',
+    stok: 0,
+    atribut: ['Bahan lokal'],
+    deskripsi: 'Keripik pisang tipis dengan pisang organik dari kebun lokal, digoreng menggunakan minyak kelapa.',
   },
   {
     id: 'p4',
     nama: 'Keyboard Mekanikal Refurbished',
     harga: 350000,
     kategori: 'Elektronik',
-    gambar: 'https://placehold.co/400x300/ffffff/16a34a?text=Keyboard',
+    gambar: 'https://placehold.co/400x300/ffffff/15803d?text=Keyboard',
     umkmId: 'u3',
+    stok: 3,
+    atribut: ['Refurbished'],
+    deskripsi: 'Keyboard mekanikal yang sudah diperiksa ulang, dibersihkan, dan diuji. Bergaransi 3 bulan.',
   },
   {
     id: 'p5',
@@ -63,14 +89,20 @@ export const produk = [
     kategori: 'Elektronik',
     gambar: 'https://placehold.co/400x300/ffffff/facc15?text=Earphone',
     umkmId: 'u3',
+    stok: 12,
+    atribut: ['Bahan alami'],
+    deskripsi: 'Casing earphone berbahan bambu yang dibuat tangan. Ringan dan tidak mudah panas di telinga.',
   },
   {
     id: 'p6',
     nama: 'Mouse dari Bahan Daur Ulang',
     harga: 120000,
     kategori: 'Elektronik',
-    gambar: 'https://placehold.co/400x300/ffffff/16a34a?text=Mouse',
+    gambar: 'https://placehold.co/400x300/ffffff/15803d?text=Mouse',
     umkmId: 'u3',
+    stok: 5,
+    atribut: ['Daur ulang'],
+    deskripsi: 'Mouse dengan cangkang dari plastik daur ulang. Sensor optik dan koneksi kabel USB.',
   },
   {
     id: 'p7',
@@ -79,5 +111,41 @@ export const produk = [
     kategori: 'Elektronik',
     gambar: 'https://placehold.co/400x300/ffffff/facc15?text=Charger',
     umkmId: 'u3',
+    stok: 4,
+    atribut: ['Energi surya'],
+    deskripsi: 'Power bank dengan panel surya lipat. Bisa diisi dari matahari saat bepergian.',
+  },
+  {
+    id: 'p8',
+    nama: 'Vas dari Botol Kaca Bekas',
+    harga: 85000,
+    kategori: 'Kerajinan',
+    gambar: 'https://placehold.co/400x300/ffffff/15803d?text=Vas',
+    umkmId: 'u4',
+    stok: 6,
+    atribut: ['Daur ulang'],
+    deskripsi: 'Vas hias yang dibuat dari botol kaca bekas, dipotong dan dihaluskan satu per satu.',
+  },
+  {
+    id: 'p9',
+    nama: 'Sikat Bambu Alami',
+    harga: 32000,
+    kategori: 'Rumah Tangga',
+    gambar: 'https://placehold.co/400x300/ffffff/facc15?text=Sikat',
+    umkmId: 'u4',
+    stok: 30,
+    atribut: ['Bahan alami', 'Tanpa plastik'],
+    deskripsi: 'Sikat cuci dengan gagang bambu dan bulu alami. Bisa terurai setelah tidak dipakai lagi.',
+  },
+  {
+    id: 'p10',
+    nama: 'Lilin Kedelai Aromaterapi',
+    harga: 95000,
+    kategori: 'Rumah Tangga',
+    gambar: 'https://placehold.co/400x300/ffffff/15803d?text=Lilin',
+    umkmId: 'u4',
+    stok: 0,
+    atribut: ['Bahan alami'],
+    deskripsi: 'Lilin dari lilin kedelai dengan wewangian esensial dan wadah gelas yang bisa dipakai ulang.',
   },
 ]

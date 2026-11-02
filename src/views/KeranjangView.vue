@@ -1,8 +1,7 @@
 <script setup>
 import { computed } from 'vue'
-import { produk } from '../data.js'
 import { useKeranjangStore } from '../stores/keranjang.js'
-import { formatRupiah } from '../utils.js'
+import { cariProduk, formatRupiah } from '../utils.js'
 
 const store = useKeranjangStore()
 
@@ -10,7 +9,7 @@ const store = useKeranjangStore()
 const daftar = computed(() =>
   store.items
     .map((item) => {
-      const p = produk.find((x) => x.id === item.id)
+      const p = cariProduk(item.id)
       return p ? { ...p, jumlah: item.jumlah } : null
     })
     .filter(Boolean)
@@ -24,22 +23,37 @@ const daftar = computed(() =>
     <div v-if="daftar.length" class="wrap">
       <ul class="list">
         <li v-for="item in daftar" :key="item.id" class="baris">
-          <img :src="item.gambar" :alt="item.nama" class="thumb" />
+          <RouterLink :to="`/produk/${item.id}`">
+            <img :src="item.gambar" :alt="item.nama" class="thumb" />
+          </RouterLink>
 
           <div class="info">
-            <p class="nama">{{ item.nama }}</p>
+            <RouterLink :to="`/produk/${item.id}`" class="nama">{{ item.nama }}</RouterLink>
             <p class="harga-satuan">{{ formatRupiah(item.harga) }}</p>
           </div>
 
           <div class="jumlah">
-            <button @click="store.kurangi(item.id)">−</button>
+            <button
+              type="button"
+              :aria-label="`Kurangi ${item.nama}`"
+              @click="store.kurangi(item.id)"
+            >
+              −
+            </button>
             <span>{{ item.jumlah }}</span>
-            <button @click="store.tambah(item.id)">+</button>
+            <button
+              type="button"
+              :aria-label="`Tambah ${item.nama}`"
+              :disabled="item.jumlah >= item.stok"
+              @click="store.tambah(item.id)"
+            >
+              +
+            </button>
           </div>
 
           <p class="subtotal">{{ formatRupiah(item.harga * item.jumlah) }}</p>
 
-          <button class="hapus" @click="store.hapus(item.id)">Hapus</button>
+          <button type="button" class="hapus" @click="store.hapus(item.id)">Hapus</button>
         </li>
       </ul>
 
@@ -48,14 +62,15 @@ const daftar = computed(() =>
         <strong>{{ formatRupiah(store.totalHarga) }}</strong>
       </div>
 
-      <p class="catatan">
-        Ini hanya simulasi. Belum ada proses pembayaran.
-      </p>
+      <div class="aksi-bawah">
+        <p class="catatan">Pembayaran hanya simulasi, tidak ada transaksi nyata.</p>
+        <RouterLink to="/checkout" class="btn btn-primer">Lanjut ke checkout</RouterLink>
+      </div>
     </div>
 
     <div v-else class="kosong">
       <p>Keranjangmu masih kosong.</p>
-      <RouterLink to="/" class="btn-kembali">Mulai belanja</RouterLink>
+      <RouterLink to="/" class="btn btn-primer">Mulai belanja</RouterLink>
     </div>
   </section>
 </template>
@@ -63,7 +78,8 @@ const daftar = computed(() =>
 <style scoped>
 .judul {
   margin: 0 0 24px;
-  font-size: 1.6rem;
+  font-size: 1.7rem;
+  font-weight: 800;
 }
 
 .list {
@@ -80,7 +96,7 @@ const daftar = computed(() =>
   align-items: center;
   gap: 16px;
   padding: 12px;
-  border: 1px solid var(--warna-border);
+  border: 2px solid var(--warna-border);
   border-radius: var(--radius);
   flex-wrap: wrap;
 }
@@ -89,7 +105,7 @@ const daftar = computed(() =>
   width: 72px;
   height: 72px;
   object-fit: cover;
-  border-radius: 8px;
+  border: 1px solid var(--warna-border);
   background: var(--warna-hijau-muda);
 }
 
@@ -98,8 +114,12 @@ const daftar = computed(() =>
 }
 
 .nama {
-  margin: 0;
-  font-weight: 600;
+  font-weight: 700;
+}
+
+.nama:hover {
+  color: var(--warna-hijau);
+  text-decoration: underline;
 }
 
 .harga-satuan {
@@ -117,33 +137,42 @@ const daftar = computed(() =>
 .jumlah button {
   width: 32px;
   height: 32px;
-  border: 1px solid var(--warna-border);
-  border-radius: 8px;
+  border: 2px solid var(--warna-teks);
+  border-radius: var(--radius);
   background: #fff;
   cursor: pointer;
   font-size: 1rem;
+  font-weight: 700;
+}
+
+.jumlah button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
 .jumlah span {
   min-width: 24px;
   text-align: center;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .subtotal {
   margin: 0;
   min-width: 120px;
   text-align: right;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--warna-hijau);
 }
 
 .hapus {
   border: none;
   background: none;
-  color: #dc2626;
+  color: #b91c1c;
   cursor: pointer;
+  font: inherit;
   font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: underline;
 }
 
 .total {
@@ -153,12 +182,22 @@ const daftar = computed(() =>
   margin-top: 24px;
   padding: 16px;
   background: var(--warna-hijau-muda);
+  border: 2px solid var(--warna-hijau);
   border-radius: var(--radius);
   font-size: 1.1rem;
 }
 
+.aksi-bawah {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
 .catatan {
-  margin: 12px 0 0;
+  margin: 0;
   font-size: 0.85rem;
   color: var(--warna-teks-redup);
 }
@@ -169,13 +208,7 @@ const daftar = computed(() =>
   color: var(--warna-teks-redup);
 }
 
-.btn-kembali {
-  display: inline-block;
+.kosong .btn {
   margin-top: 12px;
-  padding: 10px 20px;
-  background: var(--warna-hijau);
-  color: #fff;
-  border-radius: var(--radius);
-  font-weight: 600;
 }
 </style>

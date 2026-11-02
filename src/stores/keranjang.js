@@ -4,13 +4,17 @@ import { produk } from '../data.js'
 const KUNCI_KERANJANG = 'ecoconnect-keranjang'
 const KUNCI_WISHLIST = 'ecoconnect-wishlist'
 
-// Membaca data dari localStorage. Jika gagal atau kosong, pakai nilai awal.
-function muat(kunci, awal) {
+let timerNotifikasi = null
+
+const adaProduk = (id) => produk.some((p) => p.id === id)
+
+// Membaca daftar dari localStorage. Jika rusak atau kosong, kembalikan array kosong.
+function muatDaftar(kunci) {
   try {
-    const data = localStorage.getItem(kunci)
-    return data ? JSON.parse(data) : awal
+    const data = JSON.parse(localStorage.getItem(kunci))
+    return Array.isArray(data) ? data : []
   } catch {
-    return awal
+    return []
   }
 }
 
@@ -25,13 +29,14 @@ function simpan(kunci, nilai) {
 
 export const useKeranjangStore = defineStore('keranjang', {
   state: () => ({
-    items: muat(KUNCI_KERANJANG, []),   // contoh: [{ id: 'p1', jumlah: 2 }]
-    wishlist: muat(KUNCI_WISHLIST, []), // contoh: ['p2', 'p4']
+    // Item yang produknya sudah tidak ada di data dibuang saat dimuat
+    items: muatDaftar(KUNCI_KERANJANG).filter((i) => adaProduk(i.id)),
+    wishlist: muatDaftar(KUNCI_WISHLIST).filter(adaProduk),
+    notifikasi: '',
   }),
 
   getters: {
-    totalItem: (state) =>
-      state.items.reduce((total, item) => total + item.jumlah, 0),
+    totalItem: (state) => state.items.reduce((total, item) => total + item.jumlah, 0),
 
     jumlahWishlist: (state) => state.wishlist.length,
 
@@ -41,18 +46,35 @@ export const useKeranjangStore = defineStore('keranjang', {
         return total + (p ? p.harga * item.jumlah : 0)
       }, 0),
 
-    // Getter yang mengembalikan fungsi, dipakai seperti: store.sudahDiWishlist('p1')
     sudahDiWishlist: (state) => (id) => state.wishlist.includes(id),
+
+    jumlahDiKeranjang: (state) => (id) => state.items.find((i) => i.id === id)?.jumlah ?? 0,
   },
 
   actions: {
-    // Satu tempat untuk menyalin state ke localStorage
     sinkron() {
       simpan(KUNCI_KERANJANG, this.items)
       simpan(KUNCI_WISHLIST, this.wishlist)
     },
 
+    // Menampilkan notifikasi singkat di bagian bawah layar
+    beri(pesan) {
+      this.notifikasi = pesan
+      clearTimeout(timerNotifikasi)
+      timerNotifikasi = setTimeout(() => {
+        this.notifikasi = ''
+      }, 2200)
+    },
+
     tambah(id) {
+      const p = produk.find((x) => x.id === id)
+      if (!p) return
+
+      if (this.jumlahDiKeranjang(id) >= p.stok) {
+        this.beri(`Stok "${p.nama}" sudah habis`)
+        return
+      }
+
       const ada = this.items.find((i) => i.id === id)
       if (ada) {
         ada.jumlah++
@@ -60,6 +82,7 @@ export const useKeranjangStore = defineStore('keranjang', {
         this.items.push({ id, jumlah: 1 })
       }
       this.sinkron()
+      this.beri(`"${p.nama}" ditambahkan ke keranjang`)
     },
 
     kurangi(id) {
@@ -75,6 +98,11 @@ export const useKeranjangStore = defineStore('keranjang', {
 
     hapus(id) {
       this.items = this.items.filter((i) => i.id !== id)
+      this.sinkron()
+    },
+
+    kosongkan() {
+      this.items = []
       this.sinkron()
     },
 
