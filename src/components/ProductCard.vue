@@ -83,7 +83,7 @@ const eco = computed(() => (props.produk.atribut?.length ?? 0) > 0)
 
 .kartu:hover {
   border-color: var(--hijau);
-  box-shadow: 4px 4px 0 var(--kuning);
+  /* box-shadow: 4px 4px 0 var(--kuning); */
 }
 
 .gambar-wrap {
